@@ -1,0 +1,23 @@
+{
+  "name": "cryptdaemon",
+  "version": "0.1.0",
+  "description": "service for rsa key exchange and password request",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@124.16.141.145/ibp/service-cryptdaemon"
+  },
+  "keywords": [
+    "crypt",
+    "exchange"
+  ],
+  "main": "start.js",
+  "author": "Wangbo",
+  "license": "ISC",
+  "dependencies": {
+    "webde-rpc": "~0.1.0",
+    "commdaemon": "~0.1.0"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  }
+}
