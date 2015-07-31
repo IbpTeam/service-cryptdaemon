@@ -1,0 +1,16 @@
+{
+ "service": "cryptdaemon",
+  "remote": "true",
+  "interfaces": [
+    {
+      "name": "getsymkey",
+      "in": ["String"],
+       "show": "l"
+    },
+    {
+      "name": "getrsakey",
+      "in": ["String"],
+       "show": "l"
+    }
+  ]
+}
