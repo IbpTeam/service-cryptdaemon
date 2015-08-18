@@ -47,11 +47,11 @@ function Proxy() {
  */
 Proxy.prototype.getsymkey = function(String, callback) {
   var l = arguments.length,
-    args = Array.prototype.slice.call(arguments, 0, (typeof callback === 'undefined' ? l : l - 1));
+      args = Array.prototype.slice.call(arguments, 0, (typeof callback === 'undefined' ? l : l - 1));
   this._ipc.invoke({
     token: this._token++,
     name: 'getsymkey',
-    in : args,
+    in: args,
     callback: callback
   });
 };
@@ -66,11 +66,11 @@ Proxy.prototype.getsymkey = function(String, callback) {
  */
 Proxy.prototype.getrsakey = function(String, callback) {
   var l = arguments.length,
-    args = Array.prototype.slice.call(arguments, 0, (typeof callback === 'undefined' ? l : l - 1));
+      args = Array.prototype.slice.call(arguments, 0, (typeof callback === 'undefined' ? l : l - 1));
   this._ipc.invoke({
     token: this._token++,
     name: 'getrsakey',
-    in : args,
+    in: args,
     callback: callback
   });
 };
@@ -90,6 +90,7 @@ Proxy.prototype.getrsakey = function(String, callback) {
  */
 Proxy.prototype.on = function(event, handler) {
   this._ipc.on(event, handler);
+  return this;
 };
 
 /**
@@ -107,11 +108,12 @@ Proxy.prototype.on = function(event, handler) {
  */
 Proxy.prototype.off = function(event, handler) {
   this._ipc.removeListener(event, handler);
+  return this;
 };
 
 var proxy = null;
 exports.getProxy = function() {
-  if (proxy == null) {
+  if(proxy == null) {
     proxy = new Proxy();
   }
   return proxy;
