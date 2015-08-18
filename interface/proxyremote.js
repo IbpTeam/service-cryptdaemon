@@ -3,15 +3,44 @@
 // TODO: please replace types with peramters' name you wanted of any functions
 // TODO: please replace $ipcType with one of dbus, binder, websocket and socket
 
+var __cd = undefined,
+    init = false,
+    pending = [];
+require('webde-rpc').defaultSvcMgr().getService('nodejs.webde.commdaemon', function(ret) {
+  if(ret.err) return console.log(ret.err);
+  __cd = ret.ret;
+  init = true;
+  __emit();
+});
+
+function __emit() {
+  for(var key in pending) {
+    for(var i = 0; i < pending[key].length; ++i) {
+      var p = pending[key][i];
+      clearTimeout(p[1]);
+      proxy[key].apply(proxy, p[0]);
+    }
+  }
+  pending = [];
+}
+
+function __pend(fn, args, cb) {
+  if(typeof pending[fn] === 'undefined') {
+    pending[fn] = [];
+  }
+  var to = setTimeout(function() {
+    cb({err: 'Can\'t get commdaemon service'});
+  }, 5000);
+  pending[fn].push([args, to]);
+}
+
 function Proxy(ip) {
-  if (typeof ip !== 'undefined') {
+  if(typeof ip !== 'undefined') {
     this.ip = ip;
   } else {
     return console.log('The remote IP is required');
   }
 
-  // TODO: replace $cdProxy to the real path
-  this._cd = require('../node_modules/commdaemon/interface/commdaemonProxy').getProxy();
   this._token = 0;
 
 }
@@ -30,14 +59,19 @@ function Proxy(ip) {
  *    itself of this instance
  */
 Proxy.prototype.on = function(event, handler) {
-  this._cd.on(event, handler);
+  if(!init) {
+    __pend('on', arguments, function(){});
+    return ;
+  }
+  __cd.on(event, handler);
   var argvs = {
     'action': 0,
     'svr': 'nodejs.webde.cryptdaemon',
     'func': 'on',
     'args': [event]
   };
-  this._cd.send(this.ip, argvs);
+  __cd.send(this.ip, argvs);
+  return this;
 };
 
 /**
@@ -54,19 +88,24 @@ Proxy.prototype.on = function(event, handler) {
  *    itself of this instance
  */
 Proxy.prototype.off = function(event, handler) {
-  this._cd.off(event, handler);
+  if(!init) {
+    __pend('off', arguments, function(){});
+    return ;
+  }
+  __cd.off(event, handler);
   var argvs = {
     'action': 0,
     'svr': 'nodejs.webde.cryptdaemon',
     'func': 'off',
     'args': [event]
   };
-  this._cd.send(this.ip, argvs);
+  __cd.send(this.ip, argvs);
+  return this;
 };
 
 var proxy = null;
 exports.getProxy = function(ip) {
-  if (proxy == null) {
+  if(proxy == null) {
     proxy = new Proxy(ip);
   }
   return proxy;

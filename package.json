@@ -10,7 +10,7 @@
     "crypt",
     "exchange"
   ],
-  "main": "start.js",
+  "main": "index.js",
   "author": "Wangbo",
   "license": "ISC",
   "dependencies": {
